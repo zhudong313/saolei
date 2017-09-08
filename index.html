@@ -1,19 +1,297 @@
 <!DOCTYPE html>
-<html>
-<head lang="en">
-    <meta charset="UTF-8">
-    <title></title>
-    <link rel="stylesheet" href="css/style.css"/>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		*{margin: 0; padding: 0;}
+		li{list-style: none;}
+		.clearfix:before,.clearfix:after{content: ""; display: table;}
+		.clearfix:after{clear: both;}
+		.sweep{padding: 3px 0 0 3px; margin: 0 auto; }
+		.sweep li{ float: left; width: 22px; height: 22px;line-height: 22px; text-align: center; border:3px double #000; margin: -3px 0 0 -3px; background: #ccc;}
+		.sweep-set{ width: 500px; text-align: center; margin: 0 auto; padding: 5px;}
+		.sweep .none{background: #fff;}
+		.sweep .bomb{ background: url(data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wgARCAAnACoDASIAAhEBAxEB/8QAGQAAAwEBAQAAAAAAAAAAAAAAAAQGAgUD/8QAFwEBAQEBAAAAAAAAAAAAAAAAAAMBAv/aAAwDAQACEAMQAAABvzOjy5KLcL9zWN3hPqVMxykX+Y3qp6TDoJhqX2BXbA//xAAeEAADAQACAwEBAAAAAAAAAAACAwQBBRAAERIUIv/aAAgBAQABBQLphiAjZv1m+880szqi1YtXL/WbnRp06XPamWhdK2zHVBSStLM/Z6IcLLuMVigXJoxxqpuRIifulZtSriNFocOwWAPyHn//xAAZEQABBQAAAAAAAAAAAAAAAAADAAERIjD/2gAIAQMBAT8BQ2HFsP/EABsRAAEEAwAAAAAAAAAAAAAAAAEAAhARAxIg/9oACAECAQE/AU85LGsVAHH/xAAoEAABAwIEBQUBAAAAAAAAAAABAAIRAxIQIjFBEyFCUYEEIzJhccH/2gAIAQEABj8CwzOhMvEDqU4czg+m6qZmBGgWWplABDx3UEicHcR0DZBrXiHmxh/qAtMO+JbzuTKTnCanROi4ofnJ0WlPyocAUavp6cVAZ5boX16jHdrUA0k0G6l269qmB974lrHWlX1If4Vza1o/EBM4f//EACIQAQACAQQCAgMAAAAAAAAAAAEAESEQMUFRYYGR8HHR8f/aAAgBAQABPyHS1BfAs2IXDNvEq6Jfei4AL3LssiRroYflipEolPT73BUls0HL7PkeJSJQpwXfwIY/7MIZKNKtnsvTGJOv52r71KAFNYs37lOJ0lwTeOpocgbE7SjlqUJMcZ8fmbu/t8nOt0Y5l2fCj9zcJLqEZVDd0//aAAwDAQACAAMAAAAQwL0nG1g8c//EABkRAAMAAwAAAAAAAAAAAAAAAAEQEQAgIf/aAAgBAwEBPxDKNdVROn//xAAaEQACAgMAAAAAAAAAAAAAAAABERAhACAx/9oACAECAQE/EMJVp24BNuCDp0//xAAfEAEBAAIBBQEBAAAAAAAAAAABEQAhMRBBUXGhYYH/2gAIAQEAAT8Q6Liew98VCM0VIQByC+cEgAoCPS2PIKXAAgiUTJx4RsIawYW2t/MZyuAo1WmgC83cXO6qUZX1ehcA6nifLWg37fea2ARIcf4hGu2kMtn2lN9wcrzOcmFMyikmkd99c5rKW1HnAFbuu9nIN5pbwcP9NXzncwcQ+4ALzKhRR2DdBxj4ZZrd/NMIka2ycJxVNPBge58ut/Z+uopvD2ae3uP8zTCXiF8tWDpaQtN8aZ8xlqR3np//2Q==) #fff no-repeat center center / auto 100%; }
+		.sweep .flag{
+			background: url(data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wgARCAA1ADMDASIAAhEBAxEB/8QAGwABAQACAwEAAAAAAAAAAAAAAAYCBQEEBwP/xAAZAQEAAwEBAAAAAAAAAAAAAAAAAgMEAQX/2gAMAwEAAhADEAAAAb+SrPOK9G2zns6PRsNp5t9p5/TGLR53MbZz3JfTp1KNkZ2qk7iyToT3Y0RbNPuAADADIOQAf//EACIQAAECBQQDAAAAAAAAAAAAAAMAAQIEBREgFBUxNRA0Qf/aAAgBAQABBQJGqhhn3Y6aqmvBVQRIZxm8zPtr4yZ7O3C0jGqW1AR6XaEdJM62h7NwhdxkLuMZ2ceXfUEGWQnNYLCzKys2P//EAB8RAAEDBAMBAAAAAAAAAAAAAAIAAQMEFDFRECEwQf/aAAgBAwEBPwGmFiLtW8ekVGL4fgTccJp5G+q5k35f/8QAHBEAAgICAwAAAAAAAAAAAAAAAAECAxASERMw/9oACAECAQE/AbHwjeQrXhpM0idcfL//xAArEAACAAMECAcAAAAAAAAAAAABAgADERAgITESIkFygZHC0QQwMjNhoaL/2gAIAQEABj8Ch0Cy6KxGUemXyjFEpGIZeEajg2zd83KjO2ajNQYthw7xm/OKyWr8GNd1X7j3vzbN3T035u6em8qItXMN4kAaZwps2doJK6LqaHzP/8QAJRAAAQIEBgIDAAAAAAAAAAAAAQARITFx8BAgQVFhkYGxMNHh/9oACAEBAAE/IUSSAHLQ1Q/XfabCaE2Bf2irVt3pDvHgxxuu6C1UwGeiAiCJhS8HN3O7ZRAOpbhEIQTV/KEvQYkZAXvugYB8/voSArxkAoAVJELJFLKJEjyMtbtN57VbtAMMn//aAAwDAQACAAMAAAAQd0aAlyxwUIAAgAAA/8QAGhEBAQEAAwEAAAAAAAAAAAAAAREAECEwMf/aAAgBAwEBPxB+G9YU0RZPDauZ+jyvyPL/xAAbEQEAAgIDAAAAAAAAAAAAAAABABEQQTAxYf/aAAgBAgEBPxBbBntNgx2kWKqAa4v/xAAiEAEAAgEDBAMBAAAAAAAAAAABABEhMUFRIHGh8BBhkcH/2gAIAQEAAT8QuJOI7qIF88RSSYEBCTo3BVTUKcma3kviNFs1wncckGyM99ziyMcd9/Zsg/KNqTZHaJVW1L+C76FAOoGbNOPlAMo5T/IB6lnLWdAB+/sBAqurF3qjzL0d9qSrjdFX8ab1rraz1rqI2m2+VQtJat77MWQNKsJai7v7OZunzWQsszTxtUM9CW36T1KZtF3UKo06P//Z) #fff no-repeat center center / auto 100%;
+		}
+	</style>
 </head>
-<body oncontextmenu="return false;">
-<div class="box" id="box">
-    <ul>
-    </ul>
-    <div>
-        剩余<span></span>个旗子，总炸弹数<strong></strong>
-    </div>
-</div>
+<body oncontextmenu="return false;"><!--在body中进制右键默认菜单-->
+	<div class="sweep-set">
+		雷的数量：<input id="Js-sweep-num" type="text" value="" size="5" maxlength="2" />
+		列：<input id="Js-sweep-cols" type="text" value="" size="5" maxlength="2" />
+		行：<input id="Js-sweep-rows" type="text" value="" size="5" maxlength="2" />
+		<input id="Js-sweep-btn" type="button" value="确定">
+		<input id="Js-sweep-reset" type="button" value="重玩">
+	</div>
+	<div id="Js-sweep" class="sweep">
+		<ul class="clearfix">
+		</ul>
+	</div>
+	<script>
+	var oSweep={
+		bombInputNode:document.getElementById("Js-sweep-num"),//雷的数量输入框节点
+		colsInputNode:document.getElementById("Js-sweep-cols"),//列的数量输入框节点
+		rowsInputNode:document.getElementById("Js-sweep-rows"),//行的数量输入框节点
+		btnNode:document.getElementById("Js-sweep-btn"),
+		resetNode:document.getElementById("Js-sweep-reset"),
+		contentNode:document.getElementById("Js-sweep"),//容器节点
+		contentTableNode:null,
+		arr:[],//此数组为二维数组，记录所有坐标的对象状态
+		gridWidth:25,//每个格子的宽度
+		flagNum:null,//表示旗子的数量
+		appendBomb:function(bombNum,arr){//随机埋雷,//bombNum表示炸弹的数量;arr一维数组
+			var _this=this;
+			for(var i=0;i<bombNum;i++){
+				var randomNum=Math.floor(Math.random()*arr.length);
+				arr[randomNum].bombBool=true;
+				arr.splice(randomNum,1);
+			};
+		},
+		createTable:function(){//创造表格的容器
+			var _this=this;
+			var cols,rows,bombNum;//cols表示列数,rows表示行数,bombNum表示炸弹的数量
+			cols=Number(_this.colsInputNode.value);//得到列输入框的值
+			rows=Number(_this.rowsInputNode.value);
+			bombNum=Number(_this.bombInputNode.value);
+			
+			if(isNaN(cols) || isNaN(rows || isNaN(bombNum))){
+				return alert("请输入合法的数字！");
+			}
+			else if(cols<1 || rows<1 || bombNum<1){
+				return alert("请输入大于等于1的整数！");
+			}
+			else if(cols*rows/2<bombNum){//保证最多只有一半是雷
+				return alert("雷的数量最多为表格格子的一半数量！");
+			}
+			_this.flagNum=bombNum;
 
-<script src="js/script.js"></script>
+			var frag=document.createDocumentFragment();//碎片
+			var arr=[];//记录一个一维数组
+			for(var y=0;y<rows;y++){
+				_this.arr[y]=[];
+				for(var x=0;x<cols;x++){
+					var liNode=document.createElement("li");
+					frag.appendChild(liNode);
+					var gridJson={
+						bombBool:false,//false表示无雷，true表示有雷
+						x:x,
+						y:y,
+						liNode:liNode,
+						openBool:false,//false表示没有被翻开，true表示翻开
+						flagState:0//0表示初始状态，1表示占旗子,2表示问号
+					};
+					_this.arr[y][x]=gridJson;
+					arr.push(gridJson);
+				};
+			};
+			_this.appendBomb(bombNum,arr);//埋雷
+			//console.log(JSON.stringify(_this.arr));
+
+			_this.contentNode.style.width=_this.gridWidth*cols+"px";
+			_this.contentTableNode.appendChild(frag);
+
+			_this.bombInputNode.disabled=true;//将input节点变为不可用，true为不可用，false为可用
+			_this.colsInputNode.disabled=true;
+			_this.rowsInputNode.disabled=true;
+			_this.btnNode.disabled=true;
+		},
+		resetGame:function(){//重置游戏
+			var _this=this;
+			var bool=window.confirm("确定需要重玩吗?");//确认对话框,确定返回true，取消返回false
+			if(!bool){//按取消
+				return;
+			}
+			_this.bombInputNode.disabled=false;//将input节点变为不可用，true为不可用，false为可用
+			_this.colsInputNode.disabled=false;
+			_this.rowsInputNode.disabled=false;
+			_this.btnNode.disabled=false;
+			_this.bombInputNode.value="";
+			_this.colsInputNode.value="";
+			_this.rowsInputNode.value="";
+			_this.contentTableNode.innerHTML="";
+			_this.arr=[];
+		},
+		offset:function(node,x,y){//返回node元素节点到body的左上角的x和y坐标;//x表示水平坐标，y表示纵坐标
+			var _this=this;
+			if(node.nodeName.toLowerCase()=="body" || node.nodeName.toLowerCase()=="html"){
+				return {
+					x:x,
+					y:y
+				}
+			}
+			else{
+				x+=node.offsetLeft;
+				y+=node.offsetTop;
+				node=node.offsetParent;
+				return _this.offset(node,x,y);//递归
+			}
+		},
+		gameJudge:function(x,y){//x，y表示坐标
+			var _this=this;
+			//console.log(_this.arr[y][x],x,y)
+			var maxX=_this.arr[0].length-1;//x的最大坐标值
+			var maxY=_this.arr.length-1;//y的最大坐标值
+
+			if(_this.arr[y][x].bombBool){//此坐标是雷
+				for(var yy=0;yy<=maxY;yy++){
+					for(var xx=0;xx<=maxX;xx++){
+						if(_this.arr[yy][xx].bombBool){
+							_this.arr[yy][xx].liNode.className="bomb";
+						}
+					}
+				}
+				return alert("炸了！");
+			}
+
+
+			
+			var count=0;//记录炸弹数量
+			for(var yy=y-1;yy<=y+1;yy++){
+				for(var xx=x-1;xx<=x+1;xx++){
+					if(xx>=0 && xx<=maxX && yy>=0 && yy<=maxY){//xx,yy必须在有效范围内
+						if(xx==x&&yy==y){//排除自己
+							continue;//继续
+						}
+						else{
+							if(_this.arr[yy][xx].bombBool){//是炸弹
+								count++;
+							}
+						}
+					}
+				}
+			}
+
+			_this.arr[y][x].liNode.className="none";
+			if(count==0){//无炸弹
+				_this.arr[y][x].liNode.innerHTML="";
+				for(var yy=y-1;yy<=y+1;yy++){
+					for(var xx=x-1;xx<=x+1;xx++){
+						if(xx>=0 && xx<=maxX && yy>=0 && yy<=maxY){//xx,yy必须在有效范围内
+							if(xx==x&&yy==y){//排除自己
+								continue;//继续
+							}
+							else if(!_this.arr[yy][xx].openBool){//能进入递归的为非炸弹，并且未被翻开过
+								_this.arr[yy][xx].openBool=true;//标记为翻开
+								_this.gameJudge(xx,yy);
+							}
+						}
+					}
+				}
+			}
+			else{//有炸弹
+				_this.arr[y][x].openBool=true;//标记为翻开
+				_this.arr[y][x].liNode.innerHTML=count;
+			}
+		},
+		game:function(e,node){//游戏;//e表示事件对象;node表示节点（容器节点
+			var _this=this;
+			var event=window.event || e;
+			var mouseX=event.clientX+document.body.scrollLeft+document.documentElement.scrollLeft;//返回鼠标到body左上角的x坐标
+			var mouseY=event.clientY+document.body.scrollTop+document.documentElement.scrollTop;
+			var contentOffset=_this.offset(node,0,0);
+			var mouseContent_x=mouseX-contentOffset.x;
+			var mouseContent_y=mouseY-contentOffset.y;
+
+			var x=Math.floor(mouseContent_x/_this.gridWidth);//鼠标单击格子转化为一个坐标
+			var y=Math.floor(mouseContent_y/_this.gridWidth);
+			x=x==-1?0:x;
+			y=y==-1?0:y;
+			//console.log(event.type,event.button)
+			if(event.type=="click"){//事件是click即可进入
+				if(_this.arr[y][x].openBool){//已经翻过的不做任何操作
+					return;
+				}
+				_this.gameJudge(x,y);
+			}
+			else if(event.type=="mousedown" && event.button==2){//必须是右键触发mousedown
+				if(_this.arr[y][x].openBool && _this.arr[y][x].flagState===0)//已经翻过了，并且未有旗子
+				{
+					return;
+				}
+				_this.flag(x,y);
+			}
+			_this.win();
+		},
+		flag:function(x,y){//右键添加旗子、问号等操作
+			var _this=this;
+			//console.log(_this.arr[y][x].flagState);
+			if(_this.arr[y][x].flagState===0 && _this.flagNum!=0){//初始状态，未有旗子
+				_this.arr[y][x].flagState=1;
+				_this.arr[y][x].openBool=true;//翻过了
+				_this.arr[y][x].liNode.className="flag";
+				_this.flagNum-=1;//_this.flagNum=_this.flagNum-1;
+			}
+			else if(_this.arr[y][x].flagState===1){//占有旗子
+				_this.arr[y][x].flagState=2;
+				_this.arr[y][x].openBool=false;
+				_this.arr[y][x].liNode.className="";
+				_this.arr[y][x].liNode.innerHTML="?";
+				_this.flagNum+=1;
+			}
+			else if(_this.arr[y][x].flagState===2){//问号状态
+				_this.arr[y][x].flagState=0;
+				_this.arr[y][x].liNode.innerHTML="";
+			}
+		},
+		win:function(){//判断是否赢了
+			var _this=this;
+			var maxX=_this.arr[0].length-1;//x的最大坐标值
+			var maxY=_this.arr.length-1;//y的最大坐标值
+
+			var count=0;
+			for(var y=0;y<=maxY;y++){
+				for(var x=0;x<=maxX;x++){
+					if(_this.arr[y][x].openBool){
+						count++;
+					}
+				}
+			}
+			//console.log(count,(maxX+1)*(maxY+1),_this.flagNum);
+			if(count==(maxX+1)*(maxY+1) && _this.flagNum==0){
+				alert("胜利了！");
+			}
+		},
+		init:function(){
+			var _this=this;
+			_this.contentTableNode=_this.contentNode.getElementsByTagName("ul")[0];//制表容器节点
+
+			_this.btnNode.onclick=function(){
+				_this.createTable();
+			};
+
+			_this.resetNode.onclick=function(){
+				_this.resetGame();
+			};
+
+			_this.contentTableNode.onclick=function(e){
+				_this.game(e,this);
+			};
+
+			_this.contentTableNode.onmousedown=function(e){
+				_this.game(e,this);
+			};
+		}
+	};
+	oSweep.init();
+
+	/*function b(){
+		return 111;//return只能返回一层函数
+	}
+	function a(){
+		b();
+	}
+	a();//undefined
+
+	function bb(){
+		return 111;
+	}
+	function aa(){
+		return bb();
+	}
+	aa();//111*/
+	</script>
 </body>
 </html>
